@@ -11,112 +11,107 @@ using Lr4_Db_MVC_1_.Models;
 
 namespace Lr4_Db_MVC_1_.Controllers
 {
-    public class AnimesController : Controller
+    public class UsersController : Controller
     {
         private Context db = new Context();
 
-        // GET: Animes
+        // GET: Users
         public async Task<ActionResult> Index()
         {
-            var anime = db.Anime.Include(a => a.Studio);
-            return View(await anime.ToListAsync());
+            return View(await db.User.ToListAsync());
         }
 
-        // GET: Animes/Details/5
+        // GET: Users/Details/5
         public async Task<ActionResult> Details(long? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Anime anime = await db.Anime.FindAsync(id);
-            if (anime == null)
+            User user = await db.User.FindAsync(id);
+            if (user == null)
             {
                 return HttpNotFound();
             }
-            return View(anime);
+            return View(user);
         }
 
-        // GET: Animes/Create
+        // GET: Users/Create
         public ActionResult Create()
         {
-            ViewBag.StudioId = new SelectList(db.Studio, "Id", "StudioName");
             return View();
         }
 
-        // POST: Animes/Create
+        // POST: Users/Create
         // Чтобы защититься от атак чрезмерной передачи данных, включите определенные свойства, для которых следует установить привязку. Дополнительные 
         // сведения см. в разделе https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create([Bind(Include = "ID,AinmeName,Rating,views,StudioId")] Anime anime)
+        public async Task<ActionResult> Create([Bind(Include = "ID,UserName,UserPassword")] User user)
         {
             if (ModelState.IsValid)
             {
-                db.Anime.Add(anime);
+                db.User.Add(user);
                 await db.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
 
-            ViewBag.StudioId = new SelectList(db.Studio, "Id", "StudioName", anime.StudioId);
-            return View(anime);
+            return View(user);
         }
 
-        // GET: Animes/Edit/5
+        // GET: Users/Edit/5
         public async Task<ActionResult> Edit(long? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Anime anime = await db.Anime.FindAsync(id);
-            if (anime == null)
+            User user = await db.User.FindAsync(id);
+            if (user == null)
             {
                 return HttpNotFound();
             }
-            ViewBag.StudioId = new SelectList(db.Studio, "Id", "StudioName", anime.StudioId);
-            return View(anime);
+            return View(user);
         }
 
-        // POST: Animes/Edit/5
+        // POST: Users/Edit/5
         // Чтобы защититься от атак чрезмерной передачи данных, включите определенные свойства, для которых следует установить привязку. Дополнительные 
         // сведения см. в разделе https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit([Bind(Include = "ID,AinmeName,Rating,views,StudioId")] Anime anime)
+        public async Task<ActionResult> Edit([Bind(Include = "ID,UserName,UserPassword")] User user)
         {
             if (ModelState.IsValid)
             {
-                db.Entry(anime).State = EntityState.Modified;
+                db.Entry(user).State = EntityState.Modified;
                 await db.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
-            ViewBag.StudioId = new SelectList(db.Studio, "Id", "StudioName", anime.StudioId);
-            return View(anime);
+            return View(user);
         }
 
-        // GET: Animes/Delete/5
+        // GET: Users/Delete/5
         public async Task<ActionResult> Delete(long? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            Anime anime = await db.Anime.FindAsync(id);
-            if (anime == null)
+            User user = await db.User.FindAsync(id);
+            if (user == null)
             {
                 return HttpNotFound();
             }
-            return View(anime);
+            return View(user);
         }
 
-        // POST: Animes/Delete/5
+        // POST: Users/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> DeleteConfirmed(long id)
         {
-            Anime anime = await db.Anime.FindAsync(id);
-            db.Anime.Remove(anime);
+            User user = await db.User.FindAsync(id);
+            db.User.Remove(user);
             await db.SaveChangesAsync();
             return RedirectToAction("Index");
         }
