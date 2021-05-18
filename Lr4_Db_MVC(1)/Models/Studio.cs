@@ -10,6 +10,7 @@ namespace Lr4_Db_MVC_1_.Models
         public long Id { get; set; }
         public string StudioName { get; set; }
 
-        public List<Anime> Anime { get; set; }
+        public long AnimeId { get; set; }
+        public virtual List<Anime> Anime { get; set; }
     }
 }

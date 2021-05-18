@@ -10,9 +10,9 @@ namespace Lr4_Db_MVC_1_.Models
         public long ID { get; set; } 
 
         public long UserId { get; set; }
-        public User User { get; set; } 
+        public virtual User User { get; set; } 
 
         public long AnimeId { get; set; }
-        public Anime Anime { get; set; }
+        public virtual Anime Anime { get; set; }
     }
 }

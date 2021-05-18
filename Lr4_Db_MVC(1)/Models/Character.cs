@@ -10,9 +10,10 @@ namespace Lr4_Db_MVC_1_.Models
         public long ID { get; set; }
         public string CharacterName { get; set; }
          
-        public List<CharacterList> Characters { get; set; }
+        public long CharactersId { get; set; }
+        public virtual List<CharacterList> Characters { get; set; }
 
         public long VoiceActorId { get; set; }
-        public VoiceActor VoiceActor { get; set; }
+        public virtual VoiceActor VoiceActor { get; set; }
     }
 }

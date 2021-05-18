@@ -11,6 +11,7 @@ namespace Lr4_Db_MVC_1_.Models
         public string UserName { get; set; }
         public string UserPassword { get; set; }
 
-        public List<animeList> animeLists { get; set; }
+        public long animeListsId { get; set; }
+        public virtual List<animeList> animeLists { get; set; }
     }
 }
