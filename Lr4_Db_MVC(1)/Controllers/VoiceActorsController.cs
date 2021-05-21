@@ -8,12 +8,14 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using Lr4_Db_MVC_1_.Models;
+using EntityState = System.Data.Entity.EntityState;
 
 namespace Lr4_Db_MVC_1_.Controllers
 {
     public class VoiceActorsController : Controller
     {
         private Context db = new Context();
+        private Proverki.Proverki proverki = new Proverki.Proverki();
 
         // GET: VoiceActors
         public async Task<ActionResult> Index()
@@ -49,7 +51,7 @@ namespace Lr4_Db_MVC_1_.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Create([Bind(Include = "ID,VoiceActorName")] VoiceActor voiceActor)
         {
-            if (ModelState.IsValid)
+            if (ModelState.IsValid && proverki.charactersMoreThenOne(voiceActor.VoiceActorName))
             {
                 db.VoiceActor.Add(voiceActor);
                 await db.SaveChangesAsync();
@@ -81,7 +83,7 @@ namespace Lr4_Db_MVC_1_.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Edit([Bind(Include = "ID,VoiceActorName")] VoiceActor voiceActor)
         {
-            if (ModelState.IsValid)
+            if (ModelState.IsValid && proverki.charactersMoreThenOne(voiceActor.VoiceActorName))
             {
                 db.Entry(voiceActor).State = EntityState.Modified;
                 await db.SaveChangesAsync();

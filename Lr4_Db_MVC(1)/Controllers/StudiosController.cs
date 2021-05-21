@@ -8,112 +8,113 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using Lr4_Db_MVC_1_.Models;
+using Lr4_Db_MVC_1_.Proverki;
 using EntityState = System.Data.Entity.EntityState;
 
 namespace Lr4_Db_MVC_1_.Controllers
 {
-    public class UsersController : Controller
+    public class StudiosController : Controller
     {
         private Context db = new Context();
+        private Proverki.Proverki proverki = new Proverki.Proverki(); 
 
-        // GET: Users
+        // GET: Studios
         public async Task<ActionResult> Index()
         {
-            return View(await db.User.ToListAsync());
+            return View(await db.Studio.ToListAsync());
         }
 
-        // GET: Users/Details/5
+        // GET: Studios/Details/5
         public async Task<ActionResult> Details(long? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            User user = await db.User.FindAsync(id);
-            if (user == null)
+            Studio studio = await db.Studio.FindAsync(id);
+            if (studio == null)
             {
                 return HttpNotFound();
             }
-            return View(user);
+            return View(studio);
         }
 
-        // GET: Users/Create
+        // GET: Studios/Create
         public ActionResult Create()
         {
             return View();
         }
 
-        // POST: Users/Create
+        // POST: Studios/Create
         // Чтобы защититься от атак чрезмерной передачи данных, включите определенные свойства, для которых следует установить привязку. Дополнительные 
         // сведения см. в разделе https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create([Bind(Include = "ID,UserName,UserPassword")] User user)
+        public async Task<ActionResult> Create([Bind(Include = "Id,StudioName")] Studio studio)
         {
-            if (ModelState.IsValid)
+            if (ModelState.IsValid && proverki.charactersMoreThenOne(studio.StudioName))
             {
-                await db.Anime.ForEachAsync(a => user.Animes.Add(a));
-                db.User.Add(user);
+                db.Studio.Add(studio);
                 await db.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
 
-            return View(user);
+            return View(studio);
         }
 
-        // GET: Users/Edit/5
+        // GET: Studios/Edit/5
         public async Task<ActionResult> Edit(long? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            User user = await db.User.FindAsync(id);
-            if (user == null)
+            Studio studio = await db.Studio.FindAsync(id);
+            if (studio == null)
             {
                 return HttpNotFound();
             }
-            return View(user);
+            return View(studio);
         }
 
-        // POST: Users/Edit/5
+        // POST: Studios/Edit/5
         // Чтобы защититься от атак чрезмерной передачи данных, включите определенные свойства, для которых следует установить привязку. Дополнительные 
         // сведения см. в разделе https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit([Bind(Include = "ID,UserName,UserPassword")] User user)
+        public async Task<ActionResult> Edit([Bind(Include = "Id,StudioName")] Studio studio)
         {
             if (ModelState.IsValid)
             {
-                db.Entry(user).State = EntityState.Modified;
+                db.Entry(studio).State = EntityState.Modified;
                 await db.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
-            return View(user);
+            return View(studio);
         }
 
-        // GET: Users/Delete/5
+        // GET: Studios/Delete/5
         public async Task<ActionResult> Delete(long? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            User user = await db.User.FindAsync(id);
-            if (user == null)
+            Studio studio = await db.Studio.FindAsync(id);
+            if (studio == null)
             {
                 return HttpNotFound();
             }
-            return View(user);
+            return View(studio);
         }
 
-        // POST: Users/Delete/5
+        // POST: Studios/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> DeleteConfirmed(long id)
         {
-            User user = await db.User.FindAsync(id);
-            db.User.Remove(user);
+            Studio studio = await db.Studio.FindAsync(id);
+            db.Studio.Remove(studio);
             await db.SaveChangesAsync();
             return RedirectToAction("Index");
         }

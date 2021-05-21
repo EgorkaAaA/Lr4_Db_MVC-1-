@@ -43,6 +43,15 @@
             @Html.DisplayFor(model => model.views)
         </dd>
 
+        <dt>
+            @Html.DisplayNameFor(model => model.Characters)
+        </dt>
+
+        @foreach(var a in Model.Characters)
+         {
+            <dd>@a.CharacterName</dd>
+         }
+
     </dl>
 </div>
 <p>

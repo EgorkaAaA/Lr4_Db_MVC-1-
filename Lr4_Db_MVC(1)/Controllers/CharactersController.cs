@@ -12,108 +12,113 @@ using EntityState = System.Data.Entity.EntityState;
 
 namespace Lr4_Db_MVC_1_.Controllers
 {
-    public class UsersController : Controller
+    public class CharactersController : Controller
     {
         private Context db = new Context();
+        private Proverki.Proverki proverki = new Proverki.Proverki();
 
-        // GET: Users
+        // GET: Characters
         public async Task<ActionResult> Index()
         {
-            return View(await db.User.ToListAsync());
+            var character = db.Character.Include(c => c.VoiceActor);
+            return View(await character.ToListAsync());
         }
 
-        // GET: Users/Details/5
+        // GET: Characters/Details/5
         public async Task<ActionResult> Details(long? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            User user = await db.User.FindAsync(id);
-            if (user == null)
+            Character character = await db.Character.FindAsync(id);
+            if (character == null)
             {
                 return HttpNotFound();
             }
-            return View(user);
+            return View(character);
         }
 
-        // GET: Users/Create
+        // GET: Characters/Create
         public ActionResult Create()
         {
+            ViewBag.VoiceActorId = new SelectList(db.VoiceActor, "ID", "VoiceActorName");
             return View();
         }
 
-        // POST: Users/Create
+        // POST: Characters/Create
         // Чтобы защититься от атак чрезмерной передачи данных, включите определенные свойства, для которых следует установить привязку. Дополнительные 
         // сведения см. в разделе https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create([Bind(Include = "ID,UserName,UserPassword")] User user)
+        public async Task<ActionResult> Create([Bind(Include = "ID,CharacterName,CharactersId,VoiceActorId")] Character character)
         {
-            if (ModelState.IsValid)
+            if (ModelState.IsValid && proverki.charactersMoreThenOne(character.CharacterName))
             {
-                await db.Anime.ForEachAsync(a => user.Animes.Add(a));
-                db.User.Add(user);
+                db.Character.Add(character);
                 await db.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
 
-            return View(user);
+            ViewBag.VoiceActorId = new SelectList(db.VoiceActor, "ID", "VoiceActorName", character.VoiceActorId);
+            return View(character);
         }
 
-        // GET: Users/Edit/5
+        // GET: Characters/Edit/5
         public async Task<ActionResult> Edit(long? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            User user = await db.User.FindAsync(id);
-            if (user == null)
+            Character character = await db.Character.FindAsync(id);
+            if (character == null)
             {
                 return HttpNotFound();
             }
-            return View(user);
+            ViewBag.VoiceActorId = new SelectList(db.VoiceActor, "ID", "VoiceActorName", character.VoiceActorId);
+            return View(character);
         }
 
-        // POST: Users/Edit/5
+        // POST: Characters/Edit/5
         // Чтобы защититься от атак чрезмерной передачи данных, включите определенные свойства, для которых следует установить привязку. Дополнительные 
         // сведения см. в разделе https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Edit([Bind(Include = "ID,UserName,UserPassword")] User user)
+        public async Task<ActionResult> Edit([Bind(Include = "ID,CharacterName,CharactersId,VoiceActorId")] Character character)
         {
-            if (ModelState.IsValid)
+            if (ModelState.IsValid && proverki.charactersMoreThenOne(character.CharacterName))
             {
-                db.Entry(user).State = EntityState.Modified;
+                db.Entry(character).State = EntityState.Modified;
                 await db.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
-            return View(user);
+            ViewBag.VoiceActorId = new SelectList(db.VoiceActor, "ID", "VoiceActorName", character.VoiceActorId);
+            return View(character);
         }
 
-        // GET: Users/Delete/5
+        // GET: Characters/Delete/5
         public async Task<ActionResult> Delete(long? id)
         {
             if (id == null)
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            User user = await db.User.FindAsync(id);
-            if (user == null)
+            Character character = await db.Character.FindAsync(id);
+            if (character == null)
             {
                 return HttpNotFound();
             }
-            return View(user);
+            return View(character);
         }
 
-        // POST: Users/Delete/5
+        // POST: Characters/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> DeleteConfirmed(long id)
         {
-            User user = await db.User.FindAsync(id);
-            db.User.Remove(user);
+            Character character = await db.Character.FindAsync(id);
+            db.Character.Remove(character);
             await db.SaveChangesAsync();
             return RedirectToAction("Index");
         }

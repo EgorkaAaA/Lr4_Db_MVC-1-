@@ -8,12 +8,14 @@ using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using Lr4_Db_MVC_1_.Models;
+using EntityState = System.Data.Entity.EntityState;
 
 namespace Lr4_Db_MVC_1_.Controllers
 {
     public class AnimesController : Controller
     {
         private Context db = new Context();
+        private Proverki.Proverki proverki = new Proverki.Proverki();
 
         // GET: Animes
         public async Task<ActionResult> Index()
@@ -49,10 +51,17 @@ namespace Lr4_Db_MVC_1_.Controllers
         // сведения см. в разделе https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Create([Bind(Include = "ID,AinmeName,Rating,views,StudioId")] Anime anime)
+        public async Task<ActionResult> Create([Bind(Include = "ID,AinmeName,Rating,views,StudioId")] Anime anime, string s)
         {
-            if (ModelState.IsValid)
+            if (ModelState.IsValid && 
+                proverki.charactersMoreThenOne(anime.AinmeName) && 
+                proverki.digitsPositiv(anime.views) && 
+                proverki.rating(anime.Rating))
             {
+                List<string> characters = s.Split(' ', ',').ToList();
+                var b = db.Character.Where(p => p.CharacterName.ToLower() == "Наруто".ToLower());
+                await b.ForEachAsync(p => Console.WriteLine(p));
+                characters.ForEach(a => anime.Characters.Add(db.Character.Find(int.Parse(a))));
                 db.Anime.Add(anime);
                 await db.SaveChangesAsync();
                 return RedirectToAction("Index");
@@ -85,7 +94,10 @@ namespace Lr4_Db_MVC_1_.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Edit([Bind(Include = "ID,AinmeName,Rating,views,StudioId")] Anime anime)
         {
-            if (ModelState.IsValid)
+            if (ModelState.IsValid &&
+                proverki.charactersMoreThenOne(anime.AinmeName) &&
+                proverki.digitsPositiv(anime.views) &&
+                proverki.rating(anime.Rating))
             {
                 db.Entry(anime).State = EntityState.Modified;
                 await db.SaveChangesAsync();

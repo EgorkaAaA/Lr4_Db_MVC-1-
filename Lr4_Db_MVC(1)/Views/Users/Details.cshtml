@@ -27,6 +27,11 @@
             @Html.DisplayFor(model => model.UserPassword)
         </dd>
 
+        <dt>@Html.DisplayNameFor(model => model.Animes)</dt>
+        @foreach (var anime in Model.Animes)
+        {
+            <dd>@anime.AinmeName</dd>
+        }
     </dl>
 </div>
 <p>
